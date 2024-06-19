@@ -12,6 +12,7 @@
     </div>
     <div>
       <button class="task__button" v-if="!task.completed">Edit</button>
+      <button class="task__button" v-if="!task.completed">Save</button>
       <button class="task__button" @click="deleteTask(task.id)">Delete</button>
     </div>
   </div>
@@ -23,14 +24,14 @@ const props = defineProps({
     type: Array
   }
 });
-const emits = defineEmits(['DeleteTask', 'CompleteTask']);
+const emits = defineEmits(['DeleteTask', 'EditTask']);
 
 const deleteTask = (taskId) => {
   emits('DeleteTask', taskId);
 };
 const completeTask = (task) => {
   task.completed = true;
-  emits('CompleteTask', task);
+  emits('EditTask', task);
 };
 </script>
 

@@ -1,9 +1,7 @@
 <template>
-  <TodoItem
-    :taskList="actualTasks"
-    @DeleteTask="deleteTodo"
-    @CompleteTask="completeTodo"
-  ></TodoItem>
+  <TodoAddItem :id="userId" @AddTask="addTodo"></TodoAddItem>
+  <hr />
+  <TodoItem :taskList="actualTasks" @DeleteTask="deleteTodo" @EditTask="editTodo"></TodoItem>
   <hr />
   <TodoItem :taskList="completedTasks" @DeleteTask="deleteTodo"></TodoItem>
 </template>
@@ -12,12 +10,15 @@
 import { getTodos } from './API/APITodos';
 import { ref, onMounted, computed } from 'vue';
 import TodoItem from './components/TodoItem.vue';
+import TodoAddItem from './components/TodoAddItem.vue';
 
 const taskList = ref([]);
 const userId = ref(1);
 
 const actualTasks = computed(() => taskList.value.filter((task) => !task.completed));
 const completedTasks = computed(() => taskList.value.filter((task) => task.completed));
+
+const addTodo = (task) => taskList.value.push(task);
 
 const deleteTodo = (taskId) => {
   for (let i = 0; i < taskList.value.length; i++) {
@@ -28,7 +29,7 @@ const deleteTodo = (taskId) => {
   }
 };
 
-const completeTodo = (task) => {
+const editTodo = (task) => {
   for (let i = 0; i < taskList.value.length; i++) {
     if (taskList.value[i].id === task.id) {
       taskList.value[i] = task;
