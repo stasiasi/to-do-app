@@ -1,8 +1,8 @@
 <template>
   <TodoAddItem :id="userId" @AddTask="addTodo"></TodoAddItem>
-  <hr />
+  <p class="todo-app__title">Todo</p>
   <TodoItem :taskList="actualTasks" @DeleteTask="deleteTodo" @EditTask="editTodo"></TodoItem>
-  <hr />
+  <p class="todo-app__title">Completed</p>
   <TodoItem :taskList="completedTasks" @DeleteTask="deleteTodo"></TodoItem>
 </template>
 
@@ -48,4 +48,16 @@ onMounted(async () => {
 });
 </script>
 
-<style scoped></style>
+<style lang="scss">
+@import './sass/variables';
+@import './sass/mixins';
+
+.todo-app {
+  &__title {
+    margin: 50px 0 15px;
+    border-bottom: 3px solid $primary-color-dark;
+
+    @include font($size: $title-font-size, $transform: uppercase);
+  }
+}
+</style>
