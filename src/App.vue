@@ -1,41 +1,50 @@
 <template>
-  <TodoItem :taskList="actualTasks" @DeleteTask="deleteTodo"></TodoItem>
+  <TodoItem
+    :taskList="actualTasks"
+    @DeleteTask="deleteTodo"
+    @CompleteTask="completeTodo"
+  ></TodoItem>
   <hr />
   <TodoItem :taskList="completedTasks" @DeleteTask="deleteTodo"></TodoItem>
 </template>
 
 <script setup>
-import { getTodos } from './API/APITodos'
-import { ref, onMounted, computed } from 'vue'
-import TodoItem from './components/TodoItem.vue'
+import { getTodos } from './API/APITodos';
+import { ref, onMounted, computed } from 'vue';
+import TodoItem from './components/TodoItem.vue';
 
-const taskList = ref([])
-const userId = ref(1)
+const taskList = ref([]);
+const userId = ref(1);
 
-const actualTasks = computed(() => taskList.value.filter((task) => !task.completed))
-const completedTasks = computed(() => taskList.value.filter((task) => task.completed))
+const actualTasks = computed(() => taskList.value.filter((task) => !task.completed));
+const completedTasks = computed(() => taskList.value.filter((task) => task.completed));
 
 const deleteTodo = (taskId) => {
-  let index
   for (let i = 0; i < taskList.value.length; i++) {
     if (taskList.value[i].id === taskId) {
-      index = i
-      break
+      taskList.value.splice(i, 1);
+      break;
     }
   }
-  if (index !== undefined) {
-    taskList.value.splice(index, 1)
+};
+
+const completeTodo = (task) => {
+  for (let i = 0; i < taskList.value.length; i++) {
+    if (taskList.value[i].id === task.id) {
+      taskList.value[i] = task;
+      break;
+    }
   }
-}
+};
 
 onMounted(async () => {
   try {
-    const response = await getTodos(userId.value)
-    taskList.value = response.data.todos
+    const response = await getTodos(userId.value);
+    taskList.value = response.data.todos;
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
-})
+});
 </script>
 
 <style scoped></style>
