@@ -1,6 +1,11 @@
 <template>
-  <p class="todo-app__title">Add item</p>
-  <input type="text" class="todo-app__input input" v-model="newTask" @keyup.enter="addTask" />
+  <input
+    type="text"
+    class="todo-app__add input"
+    v-model="newTask"
+    @keyup.enter="addTask"
+    placeholder="Create a new todo..."
+  />
 </template>
 
 <script setup>
@@ -32,21 +37,18 @@ const addTask = () => {
 <style lang="scss">
 @import '../sass/variables';
 @import '../sass/mixins';
+
+.todo-app__add {
+  margin: 25px 40px;
+  padding: 15px;
+  width: 600px;
+}
+
 .input {
-  width: 350px;
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid $primary-color-dark;
-  background-color: $primary-color-light;
+  height: 15px;
+  border: none;
   outline: none;
 
-  @include font($weight: 400);
-
-  &:focus {
-    border-width: 2px;
-  }
-}
-.todo-app__input {
-  width: 550px;
+  @include font($font-color: $primary-color-dark);
 }
 </style>

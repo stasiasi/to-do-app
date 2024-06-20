@@ -1,26 +1,50 @@
 <template>
-  <div class="todo-app__task task" v-for="task in props.taskList" :key="task.id">
-    <div>
+  <div 
+    class="todo-app__task task" 
+    v-for="task in props.taskList" 
+    :key="task.id"
+  >
+    <div class="task__menu">
       <input
         type="checkbox"
         class="task__checkbox"
         v-model="task.completed"
         @change="completeTask(task)"
       />
-      <span v-if="!task.editing" :class="{ task_completed: task.completed }">{{ task.todo }}</span>
+      <span 
+        v-if="!task.editing" 
+        :class="{ task_completed: task.completed }"
+      >
+        {{ task.todo }}
+      </span>
       <input
         type="text"
-        class="task__input input"
+        class="task__edit-input input"
         v-if="!task.completed && task.editing"
         v-model="task.tempTodo"
       />
     </div>
-    <div>
-      <button class="task__button" v-if="!task.completed && !task.editing" @click="startEdit(task)">
+    <div class="task__menu">
+      <button
+        class="task__edit button"
+        v-if="!task.completed && !task.editing"
+        @click="startEdit(task)"
+      >
         Edit
       </button>
-      <button class="task__button" v-if="task.editing" @click="saveEditedTask(task)">Save</button>
-      <button class="task__button" @click="deleteTask(task.id)">Delete</button>
+      <button 
+        class="task__save button" 
+        v-if="task.editing" 
+        @click="saveEditedTask(task)"
+      >
+        Save
+      </button>
+      <button 
+        class="task__delete button" 
+        @click="deleteTask(task.id)"
+      >
+        Delete
+      </button>
     </div>
   </div>
 </template>
@@ -65,48 +89,54 @@ const saveEditedTask = (task) => {
 
 .todo-app__task {
   display: flex;
+  justify-content: space-between;
 }
 
 .task {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
   height: 45px;
-  border-bottom: 1px solid $primary-color-dark;
+  padding: 10px 40px;
+  border-bottom: 1px solid $primary-color-grey;
+
+  &__menu {
+    display: flex;
+    align-items: center;
+  }
+
+  &__checkbox {
+    margin-right: 15px;
+    transform: scale(1.3);
+    cursor: pointer;
+  }
+
+  &__edit-input {
+    padding: 15px;
+    padding-left: 0px;
+    width: 430px;
+    box-shadow: 0px 2px 0px $primary-accent-color;
+  }
+
+  & span {
+    width: 444px;
+  }
 
   &_completed {
     text-decoration: line-through;
   }
-
-  &__checkbox {
-    margin-right: 10px;
-    transform: scale(1.4);
-    cursor: pointer;
-  }
-
-  &__button {
-    cursor: pointer;
-
-    padding: 8px 10px;
-    margin-left: 10px;
-    border-radius: 5px;
-    border: none;
-    color: $primary-color-light;
-    background-color: $primary-color-dark;
-
-    @include font(
-      $size: 16px,
-      $weight: 500,
-      $font-color: $primary-color-light,
-      $transform: uppercase
-    );
-
-    &:hover {
-      background-color: #b35465;
-    }
-  }
 }
-span {
-  line-height: 36px;
+
+.button {
+  margin-left: 7px;
+  padding: 5px 5px 3px;
+  height: 25px;
+  border: none;
+  background-color: $primary-accent-color;
+  cursor: pointer;
+  @include font($font-color: $primary-color-light, $transform: uppercase);
+
+  &:hover {
+    background: $primary-color-light;
+    color: $primary-accent-color;
+    box-shadow: 2px 2px 15px $primary-accent-color;
+  }
 }
 </style>

@@ -1,5 +1,18 @@
 @import './variables';
 @import './mixins';
-@import './base';
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+
+* {
+  padding: 0px;
+  margin: 0px;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  font-family: $font-stack;
+  font-size: $common-font-size;
+  background-color: $background-color;
+  color: $primary-color-dark;
+}

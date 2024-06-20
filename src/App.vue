@@ -1,9 +1,11 @@
 <template>
-  <TodoAddItem :id="userId" @AddTask="addTodo"></TodoAddItem>
   <p class="todo-app__title">Todo</p>
-  <TodoItem :taskList="actualTasks" @DeleteTask="deleteTodo" @EditTask="editTodo"></TodoItem>
-  <p class="todo-app__title">Completed</p>
-  <TodoItem :taskList="completedTasks" @DeleteTask="deleteTodo"></TodoItem>
+  <TodoAddItem 
+  :id="userId" @AddTask="addTodo"></TodoAddItem>
+  <div class="todo-app__task-list">
+    <TodoItem :taskList="actualTasks" @DeleteTask="deleteTodo" @EditTask="editTodo"></TodoItem>
+    <TodoItem :taskList="completedTasks" @DeleteTask="deleteTodo"></TodoItem>
+  </div>
 </template>
 
 <script setup>
@@ -53,11 +55,21 @@ onMounted(async () => {
 @import './sass/mixins';
 
 .todo-app {
-  &__title {
-    margin: 50px 0 15px;
-    border-bottom: 3px solid $primary-color-dark;
+  background-color: $primary-accent-color;
+  box-shadow: 3px 3px 10px $primary-color-grey;
 
-    @include font($size: $title-font-size, $transform: uppercase);
+  &__title {
+    padding: 50px 0 0 40px;
+    letter-spacing: 5px;
+    @include font(
+      $size: $title-font-size,
+      $weight: 700,
+      $font-color: $primary-color-light,
+      $transform: uppercase
+    );
+  }
+  &__task-list {
+    background-color: $primary-color-light;
   }
 }
 </style>
