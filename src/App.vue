@@ -1,10 +1,27 @@
 <template>
   <p class="todo-app__title">Todo</p>
   <TodoAddItem 
-  :id="userId" @AddTask="addTodo"></TodoAddItem>
-  <div class="todo-app__task-list">
-    <TodoItem :taskList="actualTasks" @DeleteTask="deleteTodo" @EditTask="editTodo"></TodoItem>
-    <TodoItem :taskList="completedTasks" @DeleteTask="deleteTodo"></TodoItem>
+    :id="userId" 
+    @AddTask="addTodo"
+  >
+  </TodoAddItem>
+  <div class="todo-app__list">
+    <TodoItem 
+      :taskList="actualTasks" 
+      @DeleteTask="deleteTodo" 
+      @EditTask="editTodo"
+    >
+    </TodoItem>
+    <TodoItem 
+      :taskList="completedTasks" 
+      @DeleteTask="deleteTodo"
+    >
+    </TodoItem>
+    <TodoResult 
+      :actualTasks="actualTasks" 
+      @ClearCompletedTask="clearCompletedTodos"
+    >
+    </TodoResult>
   </div>
 </template>
 
@@ -13,6 +30,7 @@ import { getTodos } from './API/APITodos';
 import { ref, onMounted, computed } from 'vue';
 import TodoItem from './components/TodoItem.vue';
 import TodoAddItem from './components/TodoAddItem.vue';
+import TodoResult from './components/TodoResult.vue';
 
 const taskList = ref([]);
 const userId = ref(1);
@@ -29,6 +47,10 @@ const deleteTodo = (taskId) => {
       break;
     }
   }
+};
+
+const clearCompletedTodos = () => {
+  taskList.value = taskList.value.filter((task) => !task.completed);
 };
 
 const editTodo = (task) => {
@@ -68,7 +90,7 @@ onMounted(async () => {
       $transform: uppercase
     );
   }
-  &__task-list {
+  &__list {
     background-color: $primary-color-light;
   }
 }
