@@ -1,70 +1,62 @@
 <template>
-  <p class="todo-app__title">Todo</p>
-  <TodoAddItem 
-    :id="userId" 
-    @AddTask="addTodo"
-  >
-  </TodoAddItem>
-  <div class="todo-app__list">
-    <TodoItem 
-      :taskList="actualTasks" 
-      @DeleteTask="deleteTodo" 
-      @EditTask="editTodo"
+  <div class="todo-app">
+    <p class="todo-app__title">Todo</p>
+    <todo-add-item 
+      :id="userId" 
+      @addTask="addTodo"
+      class="todo-app__add"
     >
-    </TodoItem>
-    <TodoItem 
-      :taskList="completedTasks" 
-      @DeleteTask="deleteTodo"
-    >
-    </TodoItem>
-    <TodoResult 
-      :actualTasks="actualTasks" 
-      @ClearCompletedTask="clearCompletedTodos"
-    >
-    </TodoResult>
-  </div>
+    </todo-add-item>
+    <div class="todo-app__list">
+      <todo-item
+        v-for="task in actualTasks" 
+        :key="task.id" 
+        :task="task" 
+        @deleteTask="deleteTodo" 
+      >
+      </todo-item>
+      <todo-item 
+        v-for="task in completedTasks" 
+        :key="task.id" 
+        :task="task" 
+        @deleteTask="deleteTodo"
+      >
+      </todo-item>
+      <todo-result 
+        :actualTasks="actualTasks" 
+        @ClearCompletedTask="clearCompletedTodos"
+      >
+      </todo-result>
+    </div>
+  </div> 
 </template>
 
 <script setup>
-import { getTodos } from './API/APITodos';
+import { getTodos } from './api/apiTodos';
 import { ref, onMounted, computed } from 'vue';
-import TodoItem from './components/TodoItem.vue';
 import TodoAddItem from './components/TodoAddItem.vue';
+import TodoItem from './components/TodoItem.vue';
 import TodoResult from './components/TodoResult.vue';
 
 const taskList = ref([]);
-const userId = ref(1);
+const userId = 1;
 
 const actualTasks = computed(() => taskList.value.filter((task) => !task.completed));
 const completedTasks = computed(() => taskList.value.filter((task) => task.completed));
 
 const addTodo = (task) => taskList.value.push(task);
 
-const deleteTodo = (taskId) => {
-  for (let i = 0; i < taskList.value.length; i++) {
-    if (taskList.value[i].id === taskId) {
-      taskList.value.splice(i, 1);
-      break;
-    }
-  }
+const deleteTodo = (task) => {
+  taskList.value.splice(taskList.value.indexOf(task), 1);
 };
 
 const clearCompletedTodos = () => {
   taskList.value = taskList.value.filter((task) => !task.completed);
 };
 
-const editTodo = (task) => {
-  for (let i = 0; i < taskList.value.length; i++) {
-    if (taskList.value[i].id === task.id) {
-      taskList.value[i] = task;
-      break;
-    }
-  }
-};
-
 onMounted(async () => {
   try {
-    const response = await getTodos(userId.value);
+    const response = await getTodos(userId);
     taskList.value = response.data.todos;
   } catch (error) {
     console.error(error);
@@ -72,7 +64,7 @@ onMounted(async () => {
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import './sass/variables';
 @import './sass/mixins';
 
@@ -83,6 +75,7 @@ onMounted(async () => {
   &__title {
     padding: 50px 0 0 40px;
     letter-spacing: 5px;
+
     @include font(
       $size: $title-font-size,
       $weight: 700,
@@ -90,6 +83,7 @@ onMounted(async () => {
       $transform: uppercase
     );
   }
+
   &__list {
     background-color: $primary-color-light;
   }

@@ -1,89 +1,62 @@
+<!-- eslint-disable vue/no-mutating-props -->
 <template>
-  <div 
-    class="todo-app__task task" 
-    v-for="task in props.taskList" 
-    :key="task.id"
-  >
+  <div class="todo-app__task task">
     <div class="task__menu">
       <input
-        type="checkbox"
-        class="task__checkbox"
         v-model="task.completed"
         @change="completeTask(task)"
+        type="checkbox"
+        class="task__checkbox"
+      />
+      <input
+        v-if="isEdited"
+        v-model="task.todo"
+        @keyup.enter="editTask(task)"
+        type="text"
+        class="task__edit-input"
       />
       <span 
-        v-if="!task.editing" 
+        v-else 
         :class="{ task_completed: task.completed }"
+        @click="editTask(task)"
       >
         {{ task.todo }}
-      </span>
-      <input
-        type="text"
-        class="task__edit-input input"
-        v-if="!task.completed && task.editing"
-        v-model="task.tempTodo"
-      />
+     </span>
     </div>
-    <div class="task__menu">
-      <button
-        class="task__edit button"
-        v-if="!task.completed && !task.editing"
-        @click="startEdit(task)"
-      >
-        Edit
-      </button>
-      <button 
-        class="task__save button" 
-        v-if="task.editing" 
-        @click="saveEditedTask(task)"
-      >
-        Save
-      </button>
-      <button 
-        class="task__delete button" 
-        @click="deleteTask(task.id)"
-      >
-        Delete
-      </button>
-    </div>
+    <button 
+      class="task__delete-btn" 
+      @click="deleteTask(task)"
+    >
+      Delete
+    </button>
   </div>
 </template>
 
 <script setup>
-const emits = defineEmits(['DeleteTask', 'EditTask']);
-const props = defineProps({
-  taskList: {
-    type: Array
+import {ref} from 'vue'
+
+const isEdited = ref(false);
+const emits = defineEmits(['deleteTask']);
+defineProps({
+  task: {
+    type: Object
   }
 });
 
-const deleteTask = (taskId) => {
-  emits('DeleteTask', taskId);
+const deleteTask = (task) => {
+  emits('deleteTask', task);
 };
 
 const completeTask = (task) => {
-  if (task.editing) {
-    delete task.tempTodo;
-    delete task.editing;
-  }
   task.completed = true;
-  emits('EditTask', task);
 };
 
-const startEdit = (task) => {
-  task.editing = true;
-  task.tempTodo = task.todo;
-};
-
-const saveEditedTask = (task) => {
-  task.todo = task.tempTodo;
-  delete task.tempTodo;
-  delete task.editing;
-  emits('EditTask', task);
+const editTask = (task) => {
+  isEdited.value = task.completed ? isEdited.value : !isEdited.value;
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '../sass/variables';
 @import '../sass/mixins';
 
@@ -93,14 +66,11 @@ const saveEditedTask = (task) => {
 }
 
 .task {
+  display: flex;
+  align-items: center;
   height: 45px;
   padding: 10px 40px;
   border-bottom: 1px solid $primary-color-grey;
-
-  &__menu {
-    display: flex;
-    align-items: center;
-  }
 
   &__checkbox {
     margin-right: 15px;
@@ -111,8 +81,25 @@ const saveEditedTask = (task) => {
   &__edit-input {
     padding: 15px;
     padding-left: 0px;
-    width: 430px;
     box-shadow: 0px 2px 0px $primary-accent-color;
+
+    @include font($font-color: $primary-color-dark);
+    @include mixin-input($width: 430px);
+  }
+
+  &__delete-btn {
+  padding: 5px 5px 3px;
+  height: 25px;
+  border: none;
+  background-color: $primary-accent-color;
+  cursor: pointer;
+  @include font($font-color: $primary-color-light, $transform: uppercase);
+
+    &:hover {
+      background: $primary-color-light;
+      color: $primary-accent-color;
+      box-shadow: 2px 2px 15px $primary-accent-color;
+    }
   }
 
   & span {
@@ -121,22 +108,6 @@ const saveEditedTask = (task) => {
 
   &_completed {
     text-decoration: line-through;
-  }
-}
-
-.button {
-  margin-left: 7px;
-  padding: 5px 5px 3px;
-  height: 25px;
-  border: none;
-  background-color: $primary-accent-color;
-  cursor: pointer;
-  @include font($font-color: $primary-color-light, $transform: uppercase);
-
-  &:hover {
-    background: $primary-color-light;
-    color: $primary-accent-color;
-    box-shadow: 2px 2px 15px $primary-accent-color;
   }
 }
 </style>

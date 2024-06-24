@@ -11,3 +11,15 @@
   font-family: $font-family;
   color: $font-color;
 }
+
+@mixin mixin-input(
+  $height: 15px, 
+  $width: 600px, 
+  $border: none, 
+  $outline: none
+) {
+  height: $height;
+  width: $width;
+  border: $border;
+  outline: $outline;
+}
