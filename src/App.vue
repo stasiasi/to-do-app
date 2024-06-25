@@ -12,6 +12,7 @@
         v-for="task in actualTasks" 
         :key="task.id" 
         :task="task" 
+        @editInput="editInput" 
         @deleteTask="deleteTodo" 
       >
       </todo-item>
@@ -19,6 +20,7 @@
         v-for="task in completedTasks" 
         :key="task.id" 
         :task="task" 
+        @editInput="editInput" 
         @deleteTask="deleteTodo"
       >
       </todo-item>
@@ -45,6 +47,8 @@ const actualTasks = computed(() => taskList.value.filter((task) => !task.complet
 const completedTasks = computed(() => taskList.value.filter((task) => task.completed));
 
 const addTodo = (task) => taskList.value.push(task);
+
+const editInput = (task, value) => taskList.value[taskList.value.indexOf(task)].todo = value;
 
 const deleteTodo = (task) => {
   taskList.value.splice(taskList.value.indexOf(task), 1);

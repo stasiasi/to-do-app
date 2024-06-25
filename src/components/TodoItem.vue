@@ -1,16 +1,17 @@
-<!-- eslint-disable vue/no-mutating-props -->
 <template>
   <div class="todo-app__task task">
     <div class="task__menu">
       <input
-        v-model="task.completed"
+        :checked="task.completed"
+        :disabled="task.completed"
         @change="completeTask(task)"
         type="checkbox"
         class="task__checkbox"
       />
       <input
         v-if="isEdited"
-        v-model="task.todo"
+        :value="task.todo" 
+        @input="editInput(task, $event.target.value)"
         @keyup.enter="editTask(task)"
         type="text"
         class="task__edit-input"
@@ -36,12 +37,16 @@
 import {ref} from 'vue'
 
 const isEdited = ref(false);
-const emits = defineEmits(['deleteTask']);
+const emits = defineEmits(['deleteTask','editInput']);
 defineProps({
   task: {
     type: Object
   }
 });
+
+const editInput = (task, value) => {
+  emits('editInput', task, value);
+};
 
 const deleteTask = (task) => {
   emits('deleteTask', task);
